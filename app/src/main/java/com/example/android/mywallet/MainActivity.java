@@ -1,5 +1,6 @@
 package com.example.android.mywallet;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +27,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// Powered by Etherscan.io APIs https://etherscan.io/apis
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -35,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * URL to query the number of most recent block
      */
-    private static final String ETHER_REQUEST_URL = "https://api.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken";
+    private static final String ETHER_REQUEST_URL = "https://api.etherscan.io/api?module=proxy&action=eth_getBlockByNumber&tag=0x10d4f&boolean=true";
+
+    private static final String API_KEY_PARAM = "apikey";
 
     private ListView transactionListView;
 
@@ -60,13 +66,24 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(URL... urls) {
 
-            // Create URL object
-            URL url = createUrl(ETHER_REQUEST_URL);
-
             // Perform HTTP request to the URL and receive a JSON response back
             String jsonResponse = "";
             try {
+
+                // Create URL object
+                //URL url = createUrl(ETHER_REQUEST_URL);
+
+                Uri builtUri = Uri.parse(ETHER_REQUEST_URL).buildUpon()
+                        .appendQueryParameter(API_KEY_PARAM, getString(R.string.api_key))
+                        .build();
+
+                URL url = new URL(builtUri.toString());
+
+                Log.i("URL", builtUri.toString());
+
                 jsonResponse = makeHttpRequest(url);
+
+
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem making the HTTP request.", e);
             }
@@ -75,10 +92,13 @@ public class MainActivity extends AppCompatActivity {
             if (jsonResponse != null) {
                 try {
                     // Create a new JSONObject
-                    JSONObject jsonObj = new JSONObject(jsonResponse);
+                    //JSONObject jsonObj = new JSONObject(jsonResponse);
+                    JSONObject jsonObj = (JSONObject) new JSONTokener(jsonResponse).nextValue();
+                    JSONObject jsonObj2 = jsonObj.getJSONObject("results");
+                    JSONArray transactions = (JSONArray) jsonObj2.get("transaction");
 
                     // Get the JSON Array node
-                    JSONArray transactions = jsonObj.getJSONArray("transactions");
+                    //JSONArray transactions = jsonObj.getJSONArray("transactions");
 
                     // Looping through all transactions
                     for (int i = 0; i < transactions.length(); i++) {
@@ -126,8 +146,6 @@ public class MainActivity extends AppCompatActivity {
                  }
             return null;
        }
-
-
 
 
     /**
