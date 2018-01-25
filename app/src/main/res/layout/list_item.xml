@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.android.mywallet.MainActivity">
+
+    <TextView
+        android:id="@+id/blockHash"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:textSize="20sp"
+        android:textColor="#1551c3"
+        android:textStyle="bold"
+        tools:text="blockHash" />
+
+    <TextView
+        android:id="@+id/blockNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#5d5d5d"
+        android:paddingBottom="5dp"
+        tools:text="blockNumber"/>
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#5d5d5d"
+        android:paddingBottom="5dp"
+        tools:text="from"/>
+</LinearLayout>
